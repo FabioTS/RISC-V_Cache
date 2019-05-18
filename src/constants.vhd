@@ -8,6 +8,11 @@ package constants is
 	constant DEFAULT_DATA_INIT_FILE         : string  := "MEM_DADOS.mif";
 	constant DATA_MEMORY_ADDRESS_OFFSET     : integer := - 16#00002000#; -- This value will be subtract from all memory addresses
 
+	-- Cache param
+	constant BLK_SIZE	: natural := 4;
+	constant N_BLK	: natural := 8;
+	-- Cache size is equal to WORD_SIZE*LINE_SIZE*N_LINES = 32*8*4 = 1024 bytes
+	
 	-- Breg typedef
 	TYPE ARRAY_32X32 is array (0 to WORD_SIZE - 1) of std_logic_vector(WORD_SIZE - 1 downto 0);
 
