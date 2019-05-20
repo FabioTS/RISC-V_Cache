@@ -10,8 +10,9 @@ entity cache_memory is
 		address   : in    std_logic_vector(4 downto 0);
 		byteen    : in    std_logic_vector(3 downto 0);
 		data      : in    std_logic_vector(WORD_SIZE - 1 downto 0);
-		data_blk  : inout std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
-		q         : out   std_logic_vector(WORD_SIZE - 1 downto 0)
+		q         : out   std_logic_vector(WORD_SIZE - 1 downto 0);
+		wren_blk  : in    std_logic;
+		data_blk  : inout std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0)
 	);
 end entity cache_memory;
 
@@ -30,7 +31,9 @@ begin
 	process(clk) is
 	begin
 		if (falling_edge(clk)) then
-			if (wren = '1') then
+			if (wren_blk = '1') then
+				cache_mem(to_integer(unsigned(blk))) <= data_blk;
+			elsif (wren = '1') then
 				cache_mem(to_integer(unsigned(blk)))(to_integer(unsigned(blk_offset))) <= data;
 			end if;
 		end if;

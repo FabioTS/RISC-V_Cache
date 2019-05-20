@@ -148,6 +148,21 @@ set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id RISCV_tb
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 ns" -section_id RISCV_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME RISCV_tb -section_id RISCV_tb
 set_global_assignment -name PROJECT_IP_REGENERATION_POLICY ALWAYS_REGENERATE_IP
+set_global_assignment -name EDA_SIMULATION_RUN_SCRIPT test/RISCV_run_msim_rtl_vhdl.do -section_id eda_simulation
+set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
+set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name EDA_TEST_BENCH_NAME integration_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id integration_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME integration_tb -section_id integration_tb
+set_global_assignment -name EDA_TEST_BENCH_NAME immediate_decoder_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id immediate_decoder_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME immediate_decoder_tb -section_id immediate_decoder_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE testbench/RISCV_tb.vhd -section_id RISCV_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE test/integration/integration_tb.vhd -section_id integration_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE test/unit/immediate_decoder_tb.vhd -section_id immediate_decoder_tb
+set_global_assignment -name VHDL_FILE src/cache_table.vhd
+set_global_assignment -name VHDL_FILE src/cache_memory.vhd
+set_global_assignment -name VHDL_FILE src/cache_control.vhd
 set_global_assignment -name VHDL_FILE src/jump_control.vhd
 set_global_assignment -name VHDL_FILE testbench/RISCV_tb.vhd
 set_global_assignment -name VHDL_FILE src/display7seg_decoder.vhd
@@ -174,17 +189,6 @@ set_global_assignment -name VHDL_FILE src/stage_ID.vhd
 set_global_assignment -name VHDL_FILE src/register_file.vhd
 set_global_assignment -name VHDL_FILE src/immediate_decoder.vhd
 set_global_assignment -name QIP_FILE src/data_memory.qip
-set_global_assignment -name EDA_SIMULATION_RUN_SCRIPT test/RISCV_run_msim_rtl_vhdl.do -section_id eda_simulation
 set_global_assignment -name VHDL_FILE src/register_queue.vhd
-set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
-set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
-set_global_assignment -name EDA_TEST_BENCH_NAME integration_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id integration_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME integration_tb -section_id integration_tb
-set_global_assignment -name EDA_TEST_BENCH_NAME immediate_decoder_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id immediate_decoder_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME immediate_decoder_tb -section_id immediate_decoder_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE testbench/RISCV_tb.vhd -section_id RISCV_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE test/integration/integration_tb.vhd -section_id integration_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE test/unit/immediate_decoder_tb.vhd -section_id immediate_decoder_tb
+set_global_assignment -name BDF_FILE cache.bdf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
