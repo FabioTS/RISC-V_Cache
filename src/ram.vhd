@@ -43,25 +43,23 @@ ENTITY ram IS
 	PORT
 	(
 		address		: IN STD_LOGIC_VECTOR (15 DOWNTO 0);
-		byteena		: IN STD_LOGIC_VECTOR (3 DOWNTO 0) :=  (OTHERS => '1');
 		clock		: IN STD_LOGIC  := '1';
-		data		: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		data		: IN STD_LOGIC_VECTOR (127 DOWNTO 0);
 		wren		: IN STD_LOGIC ;
-		q		: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+		q		: OUT STD_LOGIC_VECTOR (127 DOWNTO 0)
 	);
 END ram;
 
 
 ARCHITECTURE SYN OF ram IS
 
-	SIGNAL sub_wire0	: STD_LOGIC_VECTOR (31 DOWNTO 0);
+	SIGNAL sub_wire0	: STD_LOGIC_VECTOR (127 DOWNTO 0);
 
 BEGIN
-	q    <= sub_wire0(31 DOWNTO 0);
+	q    <= sub_wire0(127 DOWNTO 0);
 
 	altsyncram_component : altsyncram
 	GENERIC MAP (
-		byte_size => 8,
 		clock_enable_input_a => "BYPASS",
 		clock_enable_output_a => "BYPASS",
 		init_file => "RAM_DATA.hex",
@@ -75,12 +73,11 @@ BEGIN
 		power_up_uninitialized => "FALSE",
 		read_during_write_mode_port_a => "NEW_DATA_NO_NBE_READ",
 		widthad_a => 16,
-		width_a => 32,
-		width_byteena_a => 4
+		width_a => 128,
+		width_byteena_a => 1
 	)
 	PORT MAP (
 		address_a => address,
-		byteena_a => byteena,
 		clock0 => clock,
 		data_a => data,
 		wren_a => wren,
@@ -99,7 +96,7 @@ END SYN;
 -- Retrieval info: PRIVATE: AclrByte NUMERIC "0"
 -- Retrieval info: PRIVATE: AclrData NUMERIC "0"
 -- Retrieval info: PRIVATE: AclrOutput NUMERIC "0"
--- Retrieval info: PRIVATE: BYTE_ENABLE NUMERIC "1"
+-- Retrieval info: PRIVATE: BYTE_ENABLE NUMERIC "0"
 -- Retrieval info: PRIVATE: BYTE_SIZE NUMERIC "8"
 -- Retrieval info: PRIVATE: BlankMemory NUMERIC "0"
 -- Retrieval info: PRIVATE: CLOCK_ENABLE_INPUT_A NUMERIC "0"
@@ -125,10 +122,9 @@ END SYN;
 -- Retrieval info: PRIVATE: UseDQRAM NUMERIC "1"
 -- Retrieval info: PRIVATE: WRCONTROL_ACLR_A NUMERIC "0"
 -- Retrieval info: PRIVATE: WidthAddr NUMERIC "16"
--- Retrieval info: PRIVATE: WidthData NUMERIC "32"
+-- Retrieval info: PRIVATE: WidthData NUMERIC "128"
 -- Retrieval info: PRIVATE: rden NUMERIC "0"
 -- Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
--- Retrieval info: CONSTANT: BYTE_SIZE NUMERIC "8"
 -- Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 -- Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
 -- Retrieval info: CONSTANT: INIT_FILE STRING "RAM_DATA.hex"
@@ -142,20 +138,18 @@ END SYN;
 -- Retrieval info: CONSTANT: POWER_UP_UNINITIALIZED STRING "FALSE"
 -- Retrieval info: CONSTANT: READ_DURING_WRITE_MODE_PORT_A STRING "NEW_DATA_NO_NBE_READ"
 -- Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "16"
--- Retrieval info: CONSTANT: WIDTH_A NUMERIC "32"
--- Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "4"
+-- Retrieval info: CONSTANT: WIDTH_A NUMERIC "128"
+-- Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
 -- Retrieval info: USED_PORT: address 0 0 16 0 INPUT NODEFVAL "address[15..0]"
--- Retrieval info: USED_PORT: byteena 0 0 4 0 INPUT VCC "byteena[3..0]"
 -- Retrieval info: USED_PORT: clock 0 0 0 0 INPUT VCC "clock"
--- Retrieval info: USED_PORT: data 0 0 32 0 INPUT NODEFVAL "data[31..0]"
--- Retrieval info: USED_PORT: q 0 0 32 0 OUTPUT NODEFVAL "q[31..0]"
+-- Retrieval info: USED_PORT: data 0 0 128 0 INPUT NODEFVAL "data[127..0]"
+-- Retrieval info: USED_PORT: q 0 0 128 0 OUTPUT NODEFVAL "q[127..0]"
 -- Retrieval info: USED_PORT: wren 0 0 0 0 INPUT NODEFVAL "wren"
 -- Retrieval info: CONNECT: @address_a 0 0 16 0 address 0 0 16 0
--- Retrieval info: CONNECT: @byteena_a 0 0 4 0 byteena 0 0 4 0
 -- Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
--- Retrieval info: CONNECT: @data_a 0 0 32 0 data 0 0 32 0
+-- Retrieval info: CONNECT: @data_a 0 0 128 0 data 0 0 128 0
 -- Retrieval info: CONNECT: @wren_a 0 0 0 0 wren 0 0 0 0
--- Retrieval info: CONNECT: q 0 0 32 0 @q_a 0 0 32 0
+-- Retrieval info: CONNECT: q 0 0 128 0 @q_a 0 0 128 0
 -- Retrieval info: GEN_FILE: TYPE_NORMAL ram.vhd TRUE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL ram.inc FALSE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL ram.cmp TRUE
