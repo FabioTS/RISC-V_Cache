@@ -9,7 +9,7 @@ entity cache_control is
 		clk, wren, ready_ram  : in  std_logic;
 		address               : in  std_logic_vector(31 downto 0);
 		wren_blk, wren_ram    : out std_logic;
-		stall_cache           : out std_logic;
+		read_ram, stall_cache : out std_logic;
 		read_hit, read_miss   : out std_logic;
 		write_hit, write_miss : out std_logic
 	);
@@ -74,6 +74,27 @@ begin
 	process(clk)
 	begin
 		if (rising_edge(clk)) then
+			--			case state is
+			--				when rh =>
+			--					if (wren = '0' and (valid = '1' and tag = tag_in)) then
+			--						state <= rh;
+			--					end if;
+			--				when rm =>
+			--					if (wren = '0' and (valid = '0' or tag /= tag_in)) then
+			--						state <= rm;
+			--					end if;
+			--				when wh =>
+			--					if (wren = '1' and (valid = '1' and tag = tag_in)) then
+			--						state <= wh;
+			--					end if;
+			--				when wm =>
+			--					if (wren = '1' and (valid = '0' or tag /= tag_in)) then
+			--						state <= wm;
+			--					end if;
+			--				when others =>
+			--					state <= rm;
+			--			end case;
+
 			if (wren = '0' and (valid = '1' and tag = tag_in)) then
 				state <= rh;
 			elsif (wren = '0' and (valid = '0' or tag /= tag_in)) then
@@ -81,7 +102,11 @@ begin
 			elsif (wren = '1' and (valid = '1' and tag = tag_in)) then
 				state <= wh;
 			elsif (wren = '1' and (valid = '0' or tag /= tag_in)) then
-				state <= wm;
+				if ready_ram = '1' then
+					state <= wh;
+				else
+					state <= wm;
+				end if;
 			else
 				state <= rh;
 			end if;
@@ -92,18 +117,20 @@ begin
 	process(state)
 	begin
 		case state is
-			when rm =>
-				--				wait until ready_ram = '1';	-- Delay of 7 cycles (Altera AVALLON)
+			when rm =>                  -- wait until ready_ram = '1';	-- Delay of 7 cycles (Altera AVALLON)
+			-- TODO: Write to ram if dirty
 				modified   <= '0';
 				validate   <= '1';
 				wren_table <= '1';
 				wren_blk   <= '1';
+				read_ram   <= '1';
 
-			when wh =>                  -- Write back policie
+			when wh =>                  -- TODO: Write back policie
 				modified   <= '1';
 				validate   <= '0';
 				wren_table <= '1';
 				wren_blk   <= '0';
+				read_ram   <= '0';
 
 			when wm =>                  -- Write allocate policie
 			--				wait until ready_ram = '1';	-- Delay of 7 cycles (Altera AVALLON)
@@ -111,12 +138,14 @@ begin
 				validate   <= '1';
 				wren_table <= '1';
 				wren_blk   <= '1';
+				read_ram   <= '1';
 
 			when others =>
 				modified   <= '0';
 				validate   <= '0';
 				wren_table <= '0';
 				wren_blk   <= '0';
+				read_ram   <= '0';
 		end case;
 	end process;
 

@@ -18,10 +18,6 @@ architecture RTL of cache_tb is
 	signal data        : std_logic_vector(31 downto 0) := (others => '0');
 	signal wren        : std_logic;
 	signal q           : std_logic_vector(31 downto 0) := (others => '0');
-	signal wren_blk    : std_logic;
-	signal data_blk    : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0) := (others => '0');
-	signal ready_ram   : std_logic;
-	signal wren_ram    : std_logic;
 	signal stall_cache : std_logic;
 	signal read_hit    : std_logic;
 	signal read_miss   : std_logic;
@@ -32,36 +28,14 @@ begin
 
 	clk <= not clk after clk_period / 2 when clk_unset = '0' else '0';
 
-	inst0 : entity work.ram
-		port map(
-			address => address(15 downto 0),
-			byteena => byteena,
-			clock   => clk,
-			data    => data,
-			wren    => wren,
-			q       => q
-		);
-
-	inst1 : entity work.cache_memory
-		port map(
-			clk      => clk,
-			wren     => wren,
-			address  => address(4 downto 0),
-			byteena  => byteena,
-			data     => data,
-			q        => q,
-			wren_blk => wren_blk,
-			data_blk => data_blk
-		);
-
-	inst2 : entity work.cache_control
+	DUT : entity work.cache
 		port map(
 			clk         => clk,
 			wren        => wren,
-			ready_ram   => ready_ram,
 			address     => address,
-			wren_blk    => wren_blk,
-			wren_ram    => wren_ram,
+			byteena     => byteena,
+			data        => data,
+			q           => q,
 			stall_cache => stall_cache,
 			read_hit    => read_hit,
 			read_miss   => read_miss,
@@ -69,7 +43,9 @@ begin
 			write_miss  => write_miss
 		);
 
-	tb : process
+
+
+	process
 	begin
 		-- READ MISS TEST
 		address <= std_logic_vector(to_unsigned(1, WORD_SIZE));
