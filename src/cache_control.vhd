@@ -65,15 +65,10 @@ begin
 		'1' when wm,
 		'0' when others;
 
-	with state select stall_cache <=
-		'0' when rh,
-		'0' when wh,
-		'1' when others;
-
 	-- Logic to advance to the next state
 	process(clk)
 	begin
-		if (rising_edge(clk)) then
+		if (falling_edge(clk)) then
 			--			case state is
 			--				when rh =>
 			--					if (wren = '0' and (valid = '1' and tag = tag_in)) then
@@ -114,38 +109,47 @@ begin
 	end process;
 
 	-- Output depends solely on the current state
-	process(state)
+	process(state, ready_ram)
 	begin
 		case state is
 			when rm =>                  -- wait until ready_ram = '1';	-- Delay of 7 cycles (Altera AVALLON)
 			-- TODO: Write to ram if dirty
-				modified   <= '0';
-				validate   <= '1';
-				wren_table <= '1';
-				wren_blk   <= '1';
-				read_ram   <= '1';
+				stall_cache <= '1';
+				read_ram    <= '1';
+				if (ready_ram = '1') then
+					stall_cache <= '0';
+					modified    <= '0';
+					validate    <= '1';
+					wren_table  <= '1';
+					wren_blk    <= '1';
+				end if;
 
 			when wh =>                  -- TODO: Write back policie
-				modified   <= '1';
-				validate   <= '0';
-				wren_table <= '1';
-				wren_blk   <= '0';
-				read_ram   <= '0';
+				stall_cache <= '0';
+				modified    <= '1';
+				validate    <= '0';
+				wren_table  <= '1';
+				wren_blk    <= '0';
+				read_ram    <= '0';
 
 			when wm =>                  -- Write allocate policie
 			--				wait until ready_ram = '1';	-- Delay of 7 cycles (Altera AVALLON)
-				modified   <= '0';
-				validate   <= '1';
-				wren_table <= '1';
-				wren_blk   <= '1';
-				read_ram   <= '1';
+				stall_cache <= '1';
+				read_ram    <= '1';
+				if (ready_ram = '1') then
+					modified   <= '0';
+					validate   <= '1';
+					wren_table <= '1';
+					wren_blk   <= '1';
+				end if;
 
 			when others =>
-				modified   <= '0';
-				validate   <= '0';
-				wren_table <= '0';
-				wren_blk   <= '0';
-				read_ram   <= '0';
+				stall_cache <= '0';
+				modified    <= '0';
+				validate    <= '0';
+				wren_table  <= '0';
+				wren_blk    <= '0';
+				read_ram    <= '0';
 		end case;
 	end process;
 

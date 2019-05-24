@@ -34,7 +34,7 @@ begin
 				-- Reset the counter to 0
 				cnt := 0;
 
-			elsif enable = '1' then
+			elsif enable = '1' and cnt < MAX_COUNT then
 				-- Increment the counter if counting is enabled			   
 				cnt := cnt + 1;
 

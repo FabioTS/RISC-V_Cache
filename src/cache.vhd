@@ -20,30 +20,31 @@ end entity cache;
 architecture RTL of cache is
 
 	signal wren_blk, wren_ram, ready_ram, read_ram : std_logic := '0';
-	signal data_blk, ram_in, ram_out     : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0); -- INOUT
-	signal reset_delay : std_logic;
+	signal data_blk_in, data_blk_out               : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
+	signal reset_delay                             : std_logic;
 
 begin
 
 	ram_inst : entity work.ram
 		port map(
-			address => address(15 downto 0),
+			address => address(17 downto 2),
 			clock   => clk,
-			data    => ram_in,
+			data    => data_blk_out,
 			wren    => wren_ram,
-			q       => ram_out
+			q       => data_blk_in
 		);
 
 	memory_inst : entity work.cache_memory
 		port map(
-			clk      => clk,
-			wren     => wren,
-			address  => address(4 downto 0),
-			byteena  => byteena,
-			data     => data,
-			q        => q,
-			wren_blk => wren_blk,
-			data_blk => data_blk
+			clk          => clk,
+			wren         => wren,
+			address      => address(4 downto 0),
+			byteena      => byteena,
+			data         => data,
+			q            => q,
+			wren_blk     => wren_blk,
+			data_blk_in  => data_blk_in,
+			data_blk_out => data_blk_out
 		);
 
 	control_inst : entity work.cache_control
@@ -65,7 +66,7 @@ begin
 	delay_inst : entity work.binary_counter
 		generic map(
 			MIN_COUNT => 0,
-			MAX_COUNT => 7
+			MAX_COUNT => 2
 		)
 		port map(
 			clk    => clk,
@@ -74,7 +75,7 @@ begin
 			max    => ready_ram,
 			q      => open
 		);
-		
-		reset_delay <= '1' when read_ram = '0' else '0';
+
+	reset_delay <= '1' when read_ram = '0' else '0';
 
 end architecture RTL;
