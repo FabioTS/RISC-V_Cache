@@ -33,16 +33,17 @@ begin
 
 	process(clk) is
 	begin
-		--		if (falling_edge(clk)) then
-		if (wren_blk = '1') then
-			cache_mem(to_integer(unsigned(blk)))(0) <= data_blk_in(127 downto 96);
-			cache_mem(to_integer(unsigned(blk)))(1) <= data_blk_in(95 downto 64);
-			cache_mem(to_integer(unsigned(blk)))(2) <= data_blk_in(63 downto 32);
-			cache_mem(to_integer(unsigned(blk)))(3) <= data_blk_in(31 downto 0);
-		elsif (wren = '1') then
-			cache_mem(to_integer(unsigned(blk)))(to_integer(unsigned(blk_offset))) <= data;
+		if (falling_edge(clk)) then
+			if (wren_blk = '1') then
+				cache_mem(to_integer(unsigned(blk)))(0) <= data_blk_in(127 downto 96);
+				cache_mem(to_integer(unsigned(blk)))(1) <= data_blk_in(95 downto 64);
+				cache_mem(to_integer(unsigned(blk)))(2) <= data_blk_in(63 downto 32);
+				cache_mem(to_integer(unsigned(blk)))(3) <= data_blk_in(31 downto 0);
+			end if;
+			if (wren = '1') then
+				cache_mem(to_integer(unsigned(blk)))(to_integer(unsigned(blk_offset))) <= data;
+			end if;
 		end if;
-		--		end if;
 
 	end process;
 

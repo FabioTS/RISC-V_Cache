@@ -19,9 +19,9 @@ end entity cache;
 
 architecture RTL of cache is
 
-	signal wren_blk, wren_ram, ready_ram, read_ram : std_logic := '0';
-	signal data_blk_in, data_blk_out               : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
-	signal reset_delay                             : std_logic;
+	signal wren_blk, wren_cache, wren_ram, ready_ram, read_ram : std_logic := '0';
+	signal data_blk_in, data_blk_out                           : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
+	signal reset_delay                                         : std_logic;
 
 begin
 
@@ -37,7 +37,7 @@ begin
 	memory_inst : entity work.cache_memory
 		port map(
 			clk          => clk,
-			wren         => wren,
+			wren         => wren_cache,
 			address      => address(4 downto 0),
 			byteena      => byteena,
 			data         => data,
@@ -54,6 +54,7 @@ begin
 			ready_ram   => ready_ram,
 			address     => address,
 			wren_blk    => wren_blk,
+			wren_cache  => wren_cache,
 			wren_ram    => wren_ram,
 			read_ram    => read_ram,
 			stall_cache => stall_cache,

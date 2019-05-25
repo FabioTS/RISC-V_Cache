@@ -31,15 +31,17 @@ begin
 
 	process(clk) is
 	begin
-		if (falling_edge(clk) and (wren = '1')) then
+		if falling_edge(clk) then
 			if (dirty_in = '1') then    -- Set line as modified
 				dirty_table(to_integer(unsigned(address))) <= '1';
 			end if;
-			if (validate = '1') then    -- validate line when read from memory ram
-				valid_table(to_integer(unsigned(address))) <= '1';
-			end if;
+			if (wren = '1') then
+				if (validate = '1') then -- validate line when read from memory ram
+					valid_table(to_integer(unsigned(address))) <= '1';
+				end if;
 
-			tag_table(to_integer(unsigned(address))) <= tag_in; -- if wren then write new tag of addressess
+				tag_table(to_integer(unsigned(address))) <= tag_in; -- if wren then write new tag of addressess
+			end if;
 		end if;
 
 	end process;

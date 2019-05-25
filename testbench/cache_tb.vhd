@@ -84,6 +84,21 @@ begin
 		wait until rising_edge(clk) and stall_cache = '0';
 		address <= ("000000000000000000000000000" & "001" & "01");
 		wait until rising_edge(clk) and stall_cache = '0';
+		
+		-- WRITE MISS TEST
+		wren <= '1';
+		address <= ("000000000000000000000000000" & "000" & "01");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000000" & "000" & "11");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000000" & "001" & "00");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000001" & "000" & "01");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000001" & "011" & "11");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000000" & "001" & "01");
+		wait until rising_edge(clk) and stall_cache = '0';
 
 
 		clk_unset <= '1' after 1 ns;

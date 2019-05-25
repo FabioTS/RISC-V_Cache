@@ -6,12 +6,12 @@ use work.constants.all;
 
 entity cache_control is
 	port(
-		clk, wren, ready_ram  : in  std_logic;
-		address               : in  std_logic_vector(31 downto 0);
-		wren_blk, wren_ram    : out std_logic;
-		read_ram, stall_cache : out std_logic;
-		read_hit, read_miss   : out std_logic;
-		write_hit, write_miss : out std_logic
+		clk, wren, ready_ram           : in  std_logic;
+		address                        : in  std_logic_vector(31 downto 0);
+		wren_blk, wren_cache, wren_ram : out std_logic := '0';
+		read_ram, stall_cache          : out std_logic;
+		read_hit, read_miss            : out std_logic;
+		write_hit, write_miss          : out std_logic
 	);
 end entity cache_control;
 
@@ -78,18 +78,19 @@ begin
 	end process;
 
 	-- Output depends solely on the current state
-	process(state, ready_ram)
+	process(state, clk)
 	begin
 		case state is
 			when rm =>
-			-- TODO: Write to ram if dirty
+				-- TODO: Write to ram if dirty
 				if (ready_ram = '1') then
-					stall_cache <= '0';
-					read_ram    <= '0';
+					stall_cache <= '1';
+					read_ram    <= '1';
 					modified    <= '0';
 					validate    <= '1';
 					wren_table  <= '1';
 					wren_blk    <= '1';
+					wren_cache  <= '0';
 				else
 					stall_cache <= '1';
 					read_ram    <= '1';
@@ -97,24 +98,27 @@ begin
 					validate    <= '0';
 					wren_table  <= '0';
 					wren_blk    <= '0';
+					wren_cache  <= '0';
 				end if;
 
 			when wh =>                  -- TODO: Write back policie
 				stall_cache <= '0';
 				modified    <= '1';
 				validate    <= '0';
-				wren_table  <= '1';
+				wren_table  <= '0';
 				wren_blk    <= '0';
 				read_ram    <= '0';
+				wren_cache  <= '1';
 
 			when wm =>                  -- Write allocate policie
 				if (ready_ram = '1') then
-					stall_cache <= '0';
-					read_ram    <= '0';
-					modified    <= '0';
+					stall_cache <= '1';
+					read_ram    <= '1';
+					modified    <= '1';
 					validate    <= '1';
 					wren_table  <= '1';
 					wren_blk    <= '1';
+					wren_cache  <= '1';
 				else
 					stall_cache <= '1';
 					read_ram    <= '1';
@@ -122,6 +126,7 @@ begin
 					validate    <= '0';
 					wren_table  <= '0';
 					wren_blk    <= '0';
+					wren_cache  <= '0';
 				end if;
 
 			when others =>
@@ -131,6 +136,7 @@ begin
 				wren_table  <= '0';
 				wren_blk    <= '0';
 				read_ram    <= '0';
+				wren_cache  <= '0';
 		end case;
 	end process;
 
