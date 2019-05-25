@@ -70,11 +70,7 @@ begin
 			elsif (wren = '1' and (valid = '1' and tag = tag_in)) then
 				state <= wh;
 			elsif (wren = '1' and (valid = '0' or tag /= tag_in)) then
-				if ready_ram = '1' then
-					state <= wh;
-				else
-					state <= wm;
-				end if;
+				state <= wm;
 			else
 				state <= rh;
 			end if;
@@ -89,7 +85,7 @@ begin
 			-- TODO: Write to ram if dirty
 				if (ready_ram = '1') then
 					stall_cache <= '0';
-					read_ram    <= '1';
+					read_ram    <= '0';
 					modified    <= '0';
 					validate    <= '1';
 					wren_table  <= '1';
@@ -114,7 +110,7 @@ begin
 			when wm =>                  -- Write allocate policie
 				if (ready_ram = '1') then
 					stall_cache <= '0';
-					read_ram    <= '1';
+					read_ram    <= '0';
 					modified    <= '0';
 					validate    <= '1';
 					wren_table  <= '1';

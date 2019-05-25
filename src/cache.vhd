@@ -22,7 +22,6 @@ architecture RTL of cache is
 	signal wren_blk, wren_ram, ready_ram, read_ram : std_logic := '0';
 	signal data_blk_in, data_blk_out               : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 	signal reset_delay                             : std_logic;
-	signal test_output : std_logic_vector(WORD_SIZE - 1 downto 0);
 
 begin
 
@@ -67,7 +66,7 @@ begin
 	delay_inst : entity work.binary_counter
 		generic map(
 			MIN_COUNT => 0,
-			MAX_COUNT => 2		-- Delay of 7 cycles (Altera AVALLON)
+			MAX_COUNT => 2              -- Delay of 7 cycles (Altera AVALLON)
 		)
 		port map(
 			clk    => clk,
@@ -77,14 +76,8 @@ begin
 			q      => open
 		);
 
-	reset_delay <= '1' when read_ram = '0' else '0';
+	reset_delay <= '1' when read_ram = '0'
+		else '1' when ready_ram = '1'
+		else '0';
 
-	process (clk) is
-	begin
-		if rising_edge(clk) and stall_cache /= '1' then
-			test_output <= q;
-		end if;
-		
-	end process ;
-	
 end architecture RTL;

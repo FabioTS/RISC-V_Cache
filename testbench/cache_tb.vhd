@@ -25,6 +25,7 @@ architecture RTL of cache_tb is
 	signal write_miss  : std_logic;
 	signal reset, advance : std_logic := '0';
 
+	signal test_output : std_logic_vector(31 downto 0);
 
 begin
 
@@ -60,7 +61,14 @@ begin
 --			q      => open
 --		);
 
-
+	process (clk) is
+	begin
+		if rising_edge(clk) and stall_cache /= '1' then
+			test_output <= q;
+		end if;
+		
+	end process ;
+	
 	process
 	begin
 		-- READ MISS TEST
