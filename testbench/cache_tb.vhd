@@ -47,46 +47,36 @@ begin
 			write_miss  => write_miss
 		);
 		
-	counter: entity work.binary_counter
-		generic map(
-			MIN_COUNT => 0,
-			MAX_COUNT => 10
-		)
-		port map(
-			clk    => clk,
-			reset  => reset,
-			enable => '1',
-			max    => advance,
-			q      => open
-		);
-
+--	counter: entity work.binary_counter
+--		generic map(
+--			MIN_COUNT => 0,
+--			MAX_COUNT => 10
+--		)
+--		port map(
+--			clk    => clk,
+--			reset  => reset,
+--			enable => '1',
+--			max    => advance,
+--			q      => open
+--		);
 
 
 	process
 	begin
 		-- READ MISS TEST
-		address <= std_logic_vector(to_unsigned(0, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(1, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(2, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(3, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(4, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(5, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(6, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(7, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(8, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(9, WORD_SIZE));
-		wait until advance = '1';
-		address <= std_logic_vector(to_unsigned(10, WORD_SIZE));
-		wait until advance = '1';
+		address <= ("000000000000000000000000000" & "000" & "01");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000000" & "000" & "11");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000000" & "001" & "00");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000001" & "000" & "01");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000001" & "011" & "11");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000000" & "001" & "01");
+		wait until rising_edge(clk) and stall_cache = '0';
+
 
 		clk_unset <= '1' after 1 ns;
 		wait;
