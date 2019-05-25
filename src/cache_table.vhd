@@ -17,8 +17,8 @@ end entity cache_table;
 
 architecture RTL of cache_table is
 
-	type bit_array is array (2 downto 0) of std_logic;
-	type tag_array is array (2 downto 0) of std_logic_vector(26 downto 0);
+	type bit_array is array (0 to N_BLK - 1) of std_logic;
+	type tag_array is array (0 to N_BLK - 1) of std_logic_vector(26 downto 0);
 
 	signal dirty_table : bit_array := (others => '0');
 	signal valid_table : bit_array := (others => '0');
@@ -31,7 +31,7 @@ begin
 
 	process(clk) is
 	begin
-		if (rising_edge(clk) and (wren = '1')) then
+		if (falling_edge(clk) and (wren = '1')) then
 			if (dirty_in = '1') then    -- Set line as modified
 				dirty_table(to_integer(unsigned(address))) <= '1';
 			end if;
