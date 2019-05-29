@@ -27,7 +27,7 @@ architecture RTL of cache_memory is
 	alias blk_offset : std_logic_vector (1 downto 0) is address(1 downto 0);
 
 begin
-	data_blk_out <= cache_mem(to_integer(unsigned(blk)))(3) & cache_mem(to_integer(unsigned(blk)))(2) & cache_mem(to_integer(unsigned(blk)))(1) & cache_mem(to_integer(unsigned(blk)))(0);
+	data_blk_out <= cache_mem(to_integer(unsigned(blk)))(0) & cache_mem(to_integer(unsigned(blk)))(1) & cache_mem(to_integer(unsigned(blk)))(2) & cache_mem(to_integer(unsigned(blk)))(3);
 
 	q <= cache_mem(to_integer(unsigned(blk)))(to_integer(unsigned(blk_offset)));
 

@@ -48,19 +48,6 @@ begin
 			write_miss  => write_miss
 		);
 		
---	counter: entity work.binary_counter
---		generic map(
---			MIN_COUNT => 0,
---			MAX_COUNT => 10
---		)
---		port map(
---			clk    => clk,
---			reset  => reset,
---			enable => '1',
---			max    => advance,
---			q      => open
---		);
-
 	process (clk) is
 	begin
 		if rising_edge(clk) and stall_cache /= '1' then
@@ -71,7 +58,26 @@ begin
 	
 	process
 	begin
+		-- RM
+		wren <= '0';
+		address <= ("000000000000000000000000000" & "111" & "00");
+		wait until rising_edge(clk) and stall_cache = '0';
+		-- WH
+		data <= std_logic_vector(to_unsigned(128, WORD_SIZE));
+		wren <= '1';
+		address <= ("000000000000000000000000000" & "111" & "01");
+		wait until rising_edge(clk) and stall_cache = '0';
+		-- WB RM
+		wren <= '0';
+		address <= ("000000000000000000000000001" & "111" & "00");
+		wait until rising_edge(clk) and stall_cache = '0';
+		-- RM
+		wren <= '0';
+		address <= ("000000000000000000000000001" & "111" & "00");
+		wait until rising_edge(clk) and stall_cache = '0';
+		
 		-- READ MISS TEST
+		wren <= '0';
 		address <= ("000000000000000000000000000" & "000" & "01");
 		wait until rising_edge(clk) and stall_cache = '0';
 		address <= ("000000000000000000000000000" & "000" & "11");
