@@ -13,7 +13,8 @@ entity cache is
 		q                     : out std_logic_vector(WORD_SIZE - 1 downto 0);
 		stall_cache           : out std_logic;
 		read_hit, read_miss   : out std_logic;
-		write_hit, write_miss : out std_logic
+		write_hit, write_miss : out std_logic;
+		write_back            : out std_logic
 	);
 end entity cache;
 
@@ -22,12 +23,15 @@ architecture RTL of cache is
 	signal wren_blk, wren_cache, wren_ram, ready_ram, read_ram : std_logic := '0';
 	signal data_blk_in, data_blk_out                           : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 	signal reset_delay                                         : std_logic;
+	signal address_ram                                         : std_logic_vector(15 downto 0);
+	signal tag_out                                             : std_logic_vector(26 downto 0);
 
 begin
+	address_ram <= (tag_out(12 downto 0) & address(4 downto 2)) when write_back = '1' else address(17 downto 2);
 
 	ram_inst : entity work.ram
 		port map(
-			address => address(17 downto 2),
+			address => address_ram,
 			clock   => clk,
 			data    => data_blk_out,
 			wren    => wren_ram,
@@ -56,12 +60,14 @@ begin
 			wren_blk    => wren_blk,
 			wren_cache  => wren_cache,
 			wren_ram    => wren_ram,
+			tag_out     => tag_out,
 			read_ram    => read_ram,
 			stall_cache => stall_cache,
 			read_hit    => read_hit,
 			read_miss   => read_miss,
 			write_hit   => write_hit,
-			write_miss  => write_miss
+			write_miss  => write_miss,
+			write_back  => write_back
 		);
 
 	delay_inst : entity work.binary_counter

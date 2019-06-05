@@ -33,7 +33,7 @@ begin
 
 	process(clk) is
 	begin
-		if (falling_edge(clk)) then
+		if (rising_edge(clk)) then
 			if (wren_blk = '1') then
 				cache_mem(to_integer(unsigned(blk)))(0) <= data_blk_in(127 downto 96);
 				cache_mem(to_integer(unsigned(blk)))(1) <= data_blk_in(95 downto 64);

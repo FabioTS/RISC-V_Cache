@@ -31,13 +31,12 @@ begin
 
 	process(clk) is
 	begin
-		if falling_edge(clk) then
-			if (dirty_in = '1') then    -- Set line as modified
-				dirty_table(to_integer(unsigned(address))) <= '1';
-			end if;
-			if (clean = '1') then       -- Set line as modified
-				dirty_table(to_integer(unsigned(address))) <= '0';
-			end if;
+		if (dirty_in = '1') then        -- Set line as modified
+			dirty_table(to_integer(unsigned(address))) <= '1';
+		elsif (clean = '1') then           -- Set line as modified
+			dirty_table(to_integer(unsigned(address))) <= '0';
+		end if;
+		if rising_edge(clk) then
 			if (wren = '1') then
 				if (validate = '1') then -- validate line when read from memory ram
 					valid_table(to_integer(unsigned(address))) <= '1';

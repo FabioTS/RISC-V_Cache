@@ -9,9 +9,11 @@ entity cache_control is
 		clk, wren, ready_ram           : in  std_logic;
 		address                        : in  std_logic_vector(31 downto 0);
 		wren_blk, wren_cache, wren_ram : out std_logic := '0';
+		tag_out                        : out std_logic_vector(26 downto 0);
 		read_ram, stall_cache          : out std_logic;
 		read_hit, read_miss            : out std_logic;
-		write_hit, write_miss          : out std_logic
+		write_hit, write_miss          : out std_logic;
+		write_back                     : out std_logic
 	);
 end entity cache_control;
 
@@ -32,6 +34,7 @@ architecture RTL of cache_control is
 	alias tag_in      : std_logic_vector(26 downto 0) is address(31 downto 5);
 
 begin
+	tag_out <= tag;
 
 	cache_table_inst : entity work.cache_table
 		port map(
@@ -58,6 +61,9 @@ begin
 		'0' when others;
 	with state select write_miss <=
 		'1' when wm,
+		'0' when others;
+	with state select write_back <=
+		'1' when wb,
 		'0' when others;
 
 	-- Logic to advance to the next state
@@ -86,7 +92,6 @@ begin
 		end if;
 	end process;
 
-	-- Output depends solely on the current state
 	process(state, clk)
 	begin
 		case state is
@@ -148,8 +153,6 @@ begin
 				end if;
 
 			when wb =>
-				-- TODO: Write back policie
-				-- TODO: Write to ram if dirty
 				stall_cache <= '1';
 				modified    <= '0';
 				validate    <= '1';

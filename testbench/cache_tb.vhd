@@ -23,9 +23,11 @@ architecture RTL of cache_tb is
 	signal read_miss   : std_logic;
 	signal write_hit   : std_logic;
 	signal write_miss  : std_logic;
+	signal write_back : std_logic;
 	signal reset, advance : std_logic := '0';
 
 	signal test_output : std_logic_vector(31 downto 0);
+	
 
 begin
 
@@ -45,7 +47,8 @@ begin
 			read_hit    => read_hit,
 			read_miss   => read_miss,
 			write_hit   => write_hit,
-			write_miss  => write_miss
+			write_miss  => write_miss,
+			write_back  => write_back
 		);
 		
 	process (clk) is
@@ -73,7 +76,7 @@ begin
 		wait until rising_edge(clk) and stall_cache = '0';
 		-- RM
 		wren <= '0';
-		address <= ("000000000000000000000000001" & "111" & "00");
+		address <= ("000000000000000000000000000" & "111" & "01");
 		wait until rising_edge(clk) and stall_cache = '0';
 		
 		-- READ MISS TEST
@@ -99,7 +102,9 @@ begin
 		wait until rising_edge(clk) and stall_cache = '0';
 		address <= ("000000000000000000000000000" & "001" & "00");
 		wait until rising_edge(clk) and stall_cache = '0';
-		address <= ("000000000000000000000000001" & "000" & "01");
+		address <= ("000000000000000000000000001" & "000" & "10");
+		wait until rising_edge(clk) and stall_cache = '0';
+		address <= ("000000000000000000000000000" & "000" & "10");
 		wait until rising_edge(clk) and stall_cache = '0';
 		address <= ("000000000000000000000000001" & "011" & "11");
 		wait until rising_edge(clk) and stall_cache = '0';
