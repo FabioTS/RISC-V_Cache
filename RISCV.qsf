@@ -125,7 +125,7 @@ set_location_assignment PIN_AA14 -to hex7[6]
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE115F29C7
-set_global_assignment -name TOP_LEVEL_ENTITY cache
+set_global_assignment -name TOP_LEVEL_ENTITY data_cache
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.0.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "17:55:39  DECEMBER 04, 2018"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.1.0 Lite Edition"
@@ -139,7 +139,7 @@ set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulati
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH cache_tb -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH data_cache_tb -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_NAME RISCV_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id RISCV_tb
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 ns" -section_id RISCV_tb
@@ -154,50 +154,51 @@ set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME integration_tb -section_i
 set_global_assignment -name EDA_TEST_BENCH_NAME immediate_decoder_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id immediate_decoder_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME immediate_decoder_tb -section_id immediate_decoder_tb
-set_global_assignment -name EDA_TEST_BENCH_NAME cache_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id cache_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME cache_tb -section_id cache_tb
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name VHDL_FILE src/cache.vhd
-set_global_assignment -name VHDL_FILE testbench/cache_tb.vhd
-set_global_assignment -name SOURCE_FILE src/ram.cmp
-set_global_assignment -name VHDL_FILE src/cache_table.vhd
-set_global_assignment -name VHDL_FILE src/cache_memory.vhd
-set_global_assignment -name VHDL_FILE src/cache_control.vhd
-set_global_assignment -name VHDL_FILE src/jump_control.vhd
-set_global_assignment -name VHDL_FILE testbench/RISCV_tb.vhd
-set_global_assignment -name VHDL_FILE src/display7seg_decoder.vhd
-set_global_assignment -name VHDL_FILE src/debounce.vhd
-set_global_assignment -name VHDL_FILE src/byteena_decoder.vhd
-set_global_assignment -name VHDL_FILE src/stage_WB.vhd
-set_global_assignment -name VHDL_FILE src/stage_MEM.vhd
-set_global_assignment -name VHDL_FILE src/mux8.vhd
-set_global_assignment -name SOURCE_FILE src/instruction_memory.cmp
-set_global_assignment -name SOURCE_FILE src/data_memory.cmp
-set_global_assignment -name VHDL_FILE src/stage_EX.vhd
-set_global_assignment -name VHDL_FILE src/mux2.vhd
-set_global_assignment -name VHDL_FILE src/control.vhd
-set_global_assignment -name VHDL_FILE src/ALU.vhd
-set_global_assignment -name VHDL_FILE src/ALU_control.vhd
-set_global_assignment -name QIP_FILE src/instruction_memory.qip
-set_global_assignment -name VHDL_FILE src/mux4.vhd
-set_global_assignment -name VHDL_FILE src/RISCV.vhd
-set_global_assignment -name VHDL_FILE src/stage_IF.vhd
-set_global_assignment -name VHDL_FILE src/PC.vhd
-set_global_assignment -name VHDL_FILE src/adder.vhd
-set_global_assignment -name VHDL_FILE src/constants.vhd
-set_global_assignment -name VHDL_FILE src/stage_ID.vhd
-set_global_assignment -name VHDL_FILE src/register_file.vhd
-set_global_assignment -name VHDL_FILE src/immediate_decoder.vhd
-set_global_assignment -name QIP_FILE src/data_memory.qip
-set_global_assignment -name VHDL_FILE src/register_queue.vhd
-set_global_assignment -name VHDL_FILE src/binary_counter.vhd
-set_global_assignment -name QIP_FILE src/ram.qip
 set_global_assignment -name EDA_TEST_BENCH_FILE testbench/RISCV_tb.vhd -section_id RISCV_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE test/integration/integration_tb.vhd -section_id integration_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE test/unit/immediate_decoder_tb.vhd -section_id immediate_decoder_tb
-set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "10 ns" -section_id cache_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE testbench/cache_tb.vhd -section_id cache_tb
+set_global_assignment -name EDA_TEST_BENCH_NAME data_cache_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id data_cache_tb
+set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "10 ns" -section_id data_cache_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME data_cache_tb -section_id data_cache_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE testbench/data_cache_tb.vhd -section_id data_cache_tb
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name HEX_FILE RAM_DATA.hex
+set_global_assignment -name VHDL_FILE src/stage_WB.vhd
+set_global_assignment -name VHDL_FILE src/stage_MEM.vhd
+set_global_assignment -name VHDL_FILE src/stage_IF.vhd
+set_global_assignment -name VHDL_FILE src/stage_ID.vhd
+set_global_assignment -name VHDL_FILE src/stage_EX.vhd
+set_global_assignment -name VHDL_FILE src/RISCV.vhd
+set_global_assignment -name VHDL_FILE src/register_queue.vhd
+set_global_assignment -name VHDL_FILE src/register_file.vhd
+set_global_assignment -name VHDL_FILE src/ram2.vhd
+set_global_assignment -name VHDL_FILE src/ram.vhd
+set_global_assignment -name QIP_FILE src/ram.qip
+set_global_assignment -name SOURCE_FILE src/ram.cmp
+set_global_assignment -name VHDL_FILE src/PC.vhd
+set_global_assignment -name VHDL_FILE src/mux8.vhd
+set_global_assignment -name VHDL_FILE src/mux4.vhd
+set_global_assignment -name VHDL_FILE src/mux2.vhd
+set_global_assignment -name VHDL_FILE src/jump_control.vhd
+set_global_assignment -name VHDL_FILE src/instruction_memory.vhd
+set_global_assignment -name QIP_FILE src/instruction_memory.qip
+set_global_assignment -name VHDL_FILE src/immediate_decoder.vhd
+set_global_assignment -name VHDL_FILE src/display7seg_decoder.vhd
+set_global_assignment -name VHDL_FILE src/debounce.vhd
+set_global_assignment -name VHDL_FILE src/data_memory.vhd
+set_global_assignment -name QIP_FILE src/data_memory.qip
+set_global_assignment -name VHDL_FILE src/data_cache.vhd
+set_global_assignment -name VHDL_FILE src/control.vhd
+set_global_assignment -name VHDL_FILE src/constants.vhd
+set_global_assignment -name VHDL_FILE src/cache_table.vhd
+set_global_assignment -name VHDL_FILE src/cache_memory.vhd
+set_global_assignment -name VHDL_FILE src/cache_control.vhd
+set_global_assignment -name VHDL_FILE src/byteena_decoder.vhd
+set_global_assignment -name VHDL_FILE src/binary_counter.vhd
+set_global_assignment -name VHDL_FILE src/ALU_control.vhd
+set_global_assignment -name VHDL_FILE src/ALU.vhd
+set_global_assignment -name VHDL_FILE src/adder.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

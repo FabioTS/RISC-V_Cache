@@ -6,7 +6,7 @@ use work.constants.all;
 
 entity cache_control is
 	port(
-		clk, wren, ready_ram           : in  std_logic;
+		clk, wren, ready_ram, hold_ram           : in  std_logic;
 		address                        : in  std_logic_vector(31 downto 0);
 		wren_blk, wren_cache, wren_ram : out std_logic := '0';
 		tag_out                        : out std_logic_vector(26 downto 0);
@@ -96,7 +96,7 @@ begin
 	begin
 		case state is
 			when rm =>
-				if (ready_ram = '1') then
+				if (ready_ram = '1' and hold_ram = '0') then
 					stall_cache <= '1';
 					read_ram    <= '1';
 					modified    <= '0';
@@ -130,7 +130,7 @@ begin
 				clean       <= '0';
 
 			when wm =>                  -- Write allocate policie
-				if (ready_ram = '1') then
+				if (ready_ram = '1' and hold_ram = '0') then
 					stall_cache <= '1';
 					read_ram    <= '1';
 					modified    <= '1';

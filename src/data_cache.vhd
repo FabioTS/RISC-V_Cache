@@ -3,8 +3,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.constants.all;
+use work.ram2;
 
-entity cache is
+entity data_cache is
 	port(
 		clk, wren             : in  std_logic;
 		address               : in  std_logic_vector(31 downto 0);
@@ -14,29 +15,36 @@ entity cache is
 		stall_cache           : out std_logic;
 		read_hit, read_miss   : out std_logic;
 		write_hit, write_miss : out std_logic;
-		write_back            : out std_logic
+		write_back            : out std_logic;
+		
+		address_ram           : out std_logic_vector(15 downto 0);
+		data_blk_out          : out std_logic_vector(127 downto 0);
+		wren_ram              : out std_logic;
+		data_blk_in           : in  std_logic_vector(127 downto 0);
+		read_ram              : out std_logic;
+		hold_ram, ready_ram   : in  std_logic
 	);
-end entity cache;
+end entity data_cache;
 
-architecture RTL of cache is
+architecture RTL of data_cache is
 
-	signal wren_blk, wren_cache, wren_ram, ready_ram, read_ram : std_logic := '0';
-	signal data_blk_in, data_blk_out                           : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
-	signal reset_delay                                         : std_logic;
-	signal address_ram                                         : std_logic_vector(15 downto 0);
-	signal tag_out                                             : std_logic_vector(26 downto 0);
+	signal wren_blk, wren_cache : std_logic := '0';
+	signal tag_out              : std_logic_vector(26 downto 0);
 
 begin
 	address_ram <= (tag_out(12 downto 0) & address(4 downto 2)) when write_back = '1' else address(17 downto 2);
 
-	ram_inst : entity work.ram
-		port map(
-			address => address_ram,
-			clock   => clk,
-			data    => data_blk_out,
-			wren    => wren_ram,
-			q       => data_blk_in
-		);
+--	ram_inst : entity work.ram2
+--		port map(
+--			address => address_ram,
+--			clock   => clk,
+--			data    => data_blk_out,
+--			wren    => wren_ram,
+--			q       => data_blk_in,
+--			read    => read_ram,
+--			hold    => hold_ram,
+--			ready   => ready_ram
+--		);
 
 	memory_inst : entity work.cache_memory
 		port map(
@@ -60,6 +68,7 @@ begin
 			wren_blk    => wren_blk,
 			wren_cache  => wren_cache,
 			wren_ram    => wren_ram,
+			hold_ram    => hold_ram,
 			tag_out     => tag_out,
 			read_ram    => read_ram,
 			stall_cache => stall_cache,
@@ -69,22 +78,5 @@ begin
 			write_miss  => write_miss,
 			write_back  => write_back
 		);
-
-	delay_inst : entity work.binary_counter
-		generic map(
-			MIN_COUNT => 0,
-			MAX_COUNT => 2              -- Delay of 7 cycles (Altera AVALLON)
-		)
-		port map(
-			clk    => clk,
-			reset  => reset_delay,
-			enable => read_ram,
-			max    => ready_ram,
-			q      => open
-		);
-
-	reset_delay <= '1' when read_ram = '0'
-		else '1' when ready_ram = '1'
-		else '0';
 
 end architecture RTL;
