@@ -87,7 +87,7 @@ begin
 				wren_memory      <= '0';
 				wren_register    <= '1';
 				WB_select        <= WB_SELECT_ALU;
-				
+
 			when OPCODE_AUIPC =>
 				instruction_type <= U_type;
 				ALUA_select      <= ALUA_SELECT_PC;

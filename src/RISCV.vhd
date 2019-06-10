@@ -44,14 +44,15 @@ architecture RISCV_arch of RISCV is
 	signal wren_memory_ID_EX, wren_memory_EX_MEM                                             : std_logic;
 	signal WB_select_ID_EX, WB_select_EX_MEM, stall                                          : std_logic;
 
-	signal address_ram         : std_logic_vector(15 downto 0);
-	signal data_blk_out        : std_logic_vector(127 downto 0);
-	signal wren_ram            : std_logic;
-	signal data_blk_in         : std_logic_vector(127 downto 0);
-	signal read_ram            : std_logic;
-	signal hold_ram            : std_logic;
-	signal ready_ram           : std_logic;
-	signal stall_mem, stall_id : std_logic;
+	signal address_ram            : std_logic_vector(15 downto 0);
+	signal data_blk_out           : std_logic_vector(127 downto 0);
+	signal wren_ram               : std_logic;
+	signal data_blk_in            : std_logic_vector(127 downto 0);
+	signal read_ram               : std_logic;
+	signal hold_ram               : std_logic;
+	signal ready_ram              : std_logic;
+	signal stall_mem, stall_id    : std_logic;
+	signal stall_if, stall_stages : std_logic := '0';
 
 begin
 
@@ -101,8 +102,6 @@ begin
 	--	clk <= not clk_out;
 	--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 
-	stall <= stall_id or stall_mem;
-
 	stage_IF_inst : entity work.stage_IF
 		generic map(
 			WSIZE                  => WSIZE,
@@ -113,7 +112,7 @@ begin
 			immediate       => immediate,
 			rs1             => rs1,
 			next_pc_select  => next_pc_select,
-			stall           => stall,
+			stall           => stall_if,
 			instruction_out => instruction_IF_ID,
 			PC_IF_ID_out    => PC_IF_ID
 		);
@@ -123,6 +122,7 @@ begin
 			WSIZE => WSIZE
 		)
 		port map(
+			stall_stages      => stall_stages,
 			clk               => clk,
 			instruction_in    => instruction_IF_ID,
 			instruction_out   => instruction_ID_EX,
@@ -132,7 +132,7 @@ begin
 			wren_memory_out   => wren_memory_ID_EX,
 			wren_register_out => wren_register_ID_EX,
 			WB_select_out     => WB_select_ID_EX,
-			stall             => stall_id,
+			stall_id          => stall_id,
 			wdata_out         => wdata_ID_EX,
 			ALU_A_out         => ALU_A,
 			ALU_B_out         => ALU_B,
@@ -148,6 +148,7 @@ begin
 			WSIZE => WSIZE
 		)
 		port map(
+			stall_stages      => stall_stages,
 			clk               => clk,
 			instruction_in    => instruction_ID_EX,
 			instruction_out   => instruction_EX_MEM,
@@ -170,6 +171,7 @@ begin
 			data_init_file => data_init_file
 		)
 		port map(
+			stall_stages      => stall_stages,
 			clk               => clk,
 			instruction_in    => instruction_EX_MEM,
 			instruction_out   => instruction_MEM_WB,
@@ -180,7 +182,7 @@ begin
 			wren_register_in  => wren_register_EX_MEM,
 			WB_select_in      => WB_select_EX_MEM,
 			wren_register_out => wren_register_MEM_WB,
-			stall             => stall_mem,
+			stall_mem         => stall_mem,
 			read_hit          => open,
 			read_miss         => open,
 			write_hit         => open,
@@ -209,9 +211,17 @@ begin
 			WB_data_out       => WB_data
 		);
 
+	control_stall_inst : entity work.control_stall
+		port map(
+			stall_id     => stall_id,
+			stall_mem    => stall_mem,
+			stall_if     => stall_if,
+			stall_stages => stall_stages
+		);
+
 	ram_inst : entity work.ram2
 		generic map(
---			init_file => "RAM_DATA.hex"
+			--			init_file => "RAM_DATA.hex"
 			init_file => data_init_file
 		)
 		port map(

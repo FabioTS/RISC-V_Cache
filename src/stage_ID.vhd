@@ -16,13 +16,15 @@ entity stage_ID is
 		wren_register_in                   : in  std_logic;
 		wren_memory_out, wren_register_out : out std_logic;
 		WB_select_out                      : out std_logic;
-		stall                              : out std_logic;
+		stall_id                              : out std_logic;
 		instruction_out                    : out std_logic_vector((WSIZE - 1) downto 0);
 		wdata_out                          : out std_logic_vector((WSIZE - 1) downto 0);
 		ALU_A_out, ALU_B_out               : out std_logic_vector((WSIZE - 1) downto 0);
 		immediate_out, rs1_out             : out std_logic_vector((WSIZE - 1) downto 0);
 		next_pc_select                     : out std_logic_vector(1 downto 0);
-		registers_array                    : out ARRAY_32X32
+		registers_array                    : out ARRAY_32X32;
+		
+		stall_stages : in std_logic
 	);
 end entity stage_ID;
 
@@ -43,7 +45,7 @@ architecture stage_ID_arch of stage_ID is
 begin
 	immediate_out <= immediate;
 	rs1_out       <= r1;
-	stall         <= stall_aux;
+	stall_id         <= stall_aux;
 
 	control : entity work.control
 		generic map(
@@ -140,7 +142,7 @@ begin
 				instruction_out <= BUBBLE;
 				wren_memory_out   <= '0';
 				wren_register_out <= '0';
-			else
+			elsif stall_stages /= '1' then
 				instruction_out <= instruction_in;
 				wren_memory_out   <= wren_memory;
 				wren_register_out <= wren_register;

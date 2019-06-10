@@ -158,6 +158,14 @@ set_global_assignment -name EDA_TEST_BENCH_NAME data_cache_tb -section_id eda_si
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id data_cache_tb
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "10 ns" -section_id data_cache_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME data_cache_tb -section_id data_cache_tb
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name EDA_TEST_BENCH_FILE testbench/RISCV_tb.vhd -section_id RISCV_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE test/integration/integration_tb.vhd -section_id integration_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE test/unit/immediate_decoder_tb.vhd -section_id immediate_decoder_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE testbench/data_cache_tb.vhd -section_id data_cache_tb
+set_global_assignment -name VHDL_FILE src/control_stall.vhd
 set_global_assignment -name HEX_FILE RAM_DATA.hex
 set_global_assignment -name VHDL_FILE src/stage_WB.vhd
 set_global_assignment -name VHDL_FILE src/stage_MEM.vhd
@@ -194,11 +202,4 @@ set_global_assignment -name VHDL_FILE src/binary_counter.vhd
 set_global_assignment -name VHDL_FILE src/ALU_control.vhd
 set_global_assignment -name VHDL_FILE src/ALU.vhd
 set_global_assignment -name VHDL_FILE src/adder.vhd
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name EDA_TEST_BENCH_FILE testbench/RISCV_tb.vhd -section_id RISCV_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE test/integration/integration_tb.vhd -section_id integration_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE test/unit/immediate_decoder_tb.vhd -section_id immediate_decoder_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE testbench/data_cache_tb.vhd -section_id data_cache_tb
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

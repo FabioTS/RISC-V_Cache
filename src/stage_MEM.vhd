@@ -20,18 +20,17 @@ entity stage_MEM is
 		wren_memory_in, wren_register_in : in  std_logic;
 		WB_select_in                     : in  std_logic;
 		wren_register_out                : out std_logic;
-		
-		stall           : out std_logic;
-		read_hit, read_miss   : out std_logic;
-		write_hit, write_miss : out std_logic;
-		write_back            : out std_logic;
-		
-		address_ram           : out std_logic_vector(15 downto 0);
-		data_blk_out          : out std_logic_vector(127 downto 0);
-		wren_ram              : out std_logic;
-		data_blk_in           : in  std_logic_vector(127 downto 0);
-		read_ram              : out std_logic;
-		hold_ram, ready_ram   : in  std_logic
+		stall_mem                        : out std_logic;
+		read_hit, read_miss              : out std_logic;
+		write_hit, write_miss            : out std_logic;
+		write_back                       : out std_logic;
+		address_ram                      : out std_logic_vector(15 downto 0);
+		data_blk_out                     : out std_logic_vector(127 downto 0);
+		wren_ram                         : out std_logic;
+		data_blk_in                      : in  std_logic_vector(127 downto 0);
+		read_ram                         : out std_logic;
+		hold_ram, ready_ram              : in  std_logic;
+		stall_stages                     : in  std_logic
 	);
 end entity stage_MEM;
 
@@ -48,7 +47,7 @@ architecture stage_MEM_arch of stage_MEM is
 
 	signal address_offset : std_logic_vector((WSIZE - 1) downto 0);
 
-	alias funct3              : std_logic_vector(2 downto 0) is instruction_in(14 downto 12);
+	alias funct3               : std_logic_vector(2 downto 0) is instruction_in(14 downto 12);
 	signal address_offset_div4 : std_logic_vector(31 downto 0);
 
 	signal not_clk : std_logic;
@@ -64,20 +63,20 @@ begin
 
 	not_clk <= not clk;
 
---	data_memory_inst : entity work.data_memory
---		generic map(
---			init_file => data_init_file
---		)
---		port map(
---			address => address_offset_div4,
---			byteena => byteena,
---			clock   => not_clk,         -- Update the memory input on the falling edge
---			data    => wdata_in,
---			wren    => wren_memory_in,
---			q       => rdata
---		);
+	--	data_memory_inst : entity work.data_memory
+	--		generic map(
+	--			init_file => data_init_file
+	--		)
+	--		port map(
+	--			address => address_offset_div4,
+	--			byteena => byteena,
+	--			clock   => not_clk,         -- Update the memory input on the falling edge
+	--			data    => wdata_in,
+	--			wren    => wren_memory_in,
+	--			q       => rdata
+	--		);
 
-data_memory_inst : entity work.data_cache
+	data_memory_inst : entity work.data_cache
 		port map(
 			clk          => clk,
 			wren         => wren_memory_in,
@@ -85,7 +84,7 @@ data_memory_inst : entity work.data_cache
 			byteena      => byteena,
 			data         => wdata_in,
 			q            => rdata,
-			stall_cache  => stall,
+			stall_cache  => stall_mem,
 			read_hit     => read_hit,
 			read_miss    => read_miss,
 			write_hit    => write_hit,
@@ -141,9 +140,11 @@ data_memory_inst : entity work.data_cache
 	process(clk) is
 	begin
 		if rising_edge(clk) then
-			instruction_out   <= instruction_in;
-			wren_register_out <= wren_register_in;
-			data_out          <= data;
+			if stall_stages /= '1' then
+				instruction_out   <= instruction_in;
+				wren_register_out <= wren_register_in;
+				data_out          <= data;
+			end if;
 		end if;
 	end process;
 

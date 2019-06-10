@@ -16,12 +16,13 @@ entity stage_EX is
 		ALU_A, ALU_B                                      : in  std_logic_vector((WSIZE - 1) downto 0);
 		ALU_Z                                             : out std_logic_vector((WSIZE - 1) downto 0);
 		wren_memory_in, wren_register_in, WB_select_in    : in  std_logic;
-		wren_memory_out, wren_register_out, WB_select_out : out std_logic
+		wren_memory_out, wren_register_out, WB_select_out : out std_logic;
+		stall_stages                                      : in  std_logic
 	);
 end entity stage_EX;
 
 architecture stage_EX_arch of stage_EX is
---	signal zero         : std_logic;
+	--	signal zero         : std_logic;
 	signal Z            : std_logic_vector((WSIZE - 1) downto 0);
 	signal ALU_function : FUNCTION_TYPE;
 
@@ -52,12 +53,14 @@ begin
 	process(clk) is
 	begin
 		if rising_edge(clk) then
-			instruction_out   <= instruction_in;
-			wdata_out         <= wdata_in;
-			wren_memory_out   <= wren_memory_in;
-			wren_register_out <= wren_register_in;
-			WB_select_out     <= WB_select_in;
-			ALU_Z             <= Z;
+			if stall_stages /= '1' then
+				instruction_out   <= instruction_in;
+				wdata_out         <= wdata_in;
+				wren_memory_out   <= wren_memory_in;
+				wren_register_out <= wren_register_in;
+				WB_select_out     <= WB_select_in;
+				ALU_Z             <= Z;
+			end if;
 		end if;
 	end process;
 
