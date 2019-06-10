@@ -44,6 +44,15 @@ architecture RISCV_arch of RISCV is
 	signal wren_memory_ID_EX, wren_memory_EX_MEM                                             : std_logic;
 	signal WB_select_ID_EX, WB_select_EX_MEM, stall                                          : std_logic;
 
+	signal address_ram         : std_logic_vector(15 downto 0);
+	signal data_blk_out        : std_logic_vector(127 downto 0);
+	signal wren_ram            : std_logic;
+	signal data_blk_in         : std_logic_vector(127 downto 0);
+	signal read_ram            : std_logic;
+	signal hold_ram            : std_logic;
+	signal ready_ram           : std_logic;
+	signal stall_mem, stall_id : std_logic;
+
 begin
 
 	instruction <= instruction_IF_ID;
@@ -92,6 +101,8 @@ begin
 	--	clk <= not clk_out;
 	--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 
+	stall <= stall_id or stall_mem;
+
 	stage_IF_inst : entity work.stage_IF
 		generic map(
 			WSIZE                  => WSIZE,
@@ -121,7 +132,7 @@ begin
 			wren_memory_out   => wren_memory_ID_EX,
 			wren_register_out => wren_register_ID_EX,
 			WB_select_out     => WB_select_ID_EX,
-			stall             => stall,
+			stall             => stall_id,
 			wdata_out         => wdata_ID_EX,
 			ALU_A_out         => ALU_A,
 			ALU_B_out         => ALU_B,
@@ -168,7 +179,20 @@ begin
 			wren_memory_in    => wren_memory_EX_MEM,
 			wren_register_in  => wren_register_EX_MEM,
 			WB_select_in      => WB_select_EX_MEM,
-			wren_register_out => wren_register_MEM_WB
+			wren_register_out => wren_register_MEM_WB,
+			stall             => stall_mem,
+			read_hit          => open,
+			read_miss         => open,
+			write_hit         => open,
+			write_miss        => open,
+			write_back        => open,
+			address_ram       => address_ram,
+			data_blk_out      => data_blk_out,
+			wren_ram          => wren_ram,
+			data_blk_in       => data_blk_in,
+			read_ram          => read_ram,
+			hold_ram          => hold_ram,
+			ready_ram         => ready_ram
 		);
 
 	stage_WB_inst : entity work.stage_WB
@@ -183,6 +207,22 @@ begin
 			wren_register_out => wren_register_WB,
 			WB_address        => WB_address,
 			WB_data_out       => WB_data
+		);
+
+	ram_inst : entity work.ram2
+		generic map(
+--			init_file => "RAM_DATA.hex"
+			init_file => data_init_file
+		)
+		port map(
+			address => address_ram,
+			clock   => clk,
+			data    => data_blk_out,
+			wren    => wren_ram,
+			q       => data_blk_in,
+			read    => read_ram,
+			hold    => hold_ram,
+			ready   => ready_ram
 		);
 
 end RISCV_arch;

@@ -87,7 +87,7 @@ begin
 					state <= wm;
 				end if;
 			else
-				state <= rh;
+				state <= rm;
 			end if;
 		end if;
 	end process;

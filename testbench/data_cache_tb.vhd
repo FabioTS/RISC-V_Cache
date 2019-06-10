@@ -66,6 +66,9 @@ begin
 		);
 
 	ram_inst : entity work.ram2
+			generic map(
+				init_file => "RAM_DATA.hex"
+			)
 		port map(
 			address => address_ram,
 			clock   => clk,

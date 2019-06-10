@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity ram2 is
+	generic(init_file : string);
 	port(
 		address     : in  std_logic_vector(15 downto 0);
 		clock       : in  std_logic := '1';
@@ -20,6 +21,9 @@ architecture RTL of ram2 is
 begin
 
 	ram_inst : entity work.ram
+		generic map(
+			init_file => init_file
+		)
 		port map(
 			address => address,
 			clock   => clock,

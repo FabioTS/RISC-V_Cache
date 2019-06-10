@@ -40,6 +40,7 @@ LIBRARY altera_mf;
 USE altera_mf.altera_mf_components.all;
 
 ENTITY ram IS
+	generic(init_file : string);
 	PORT
 	(
 		address		: IN STD_LOGIC_VECTOR (15 DOWNTO 0);
@@ -62,7 +63,7 @@ BEGIN
 	GENERIC MAP (
 		clock_enable_input_a => "BYPASS",
 		clock_enable_output_a => "BYPASS",
-		init_file => "RAM_DATA.hex",
+		init_file => init_file,
 		intended_device_family => "Cyclone IV E",
 		lpm_hint => "ENABLE_RUNTIME_MOD=NO",
 		lpm_type => "altsyncram",
