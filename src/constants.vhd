@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.math_real.all;
 
 package constants is
 	-- Configuration
@@ -9,9 +10,12 @@ package constants is
 	constant DATA_MEMORY_ADDRESS_OFFSET     : integer := - 16#00002000#; -- This value will be subtract from all memory addresses
 
 	-- Cache param
-	constant BLK_SIZE	: natural := 4;
-	constant N_BLK	: natural := 8;
-	-- Cache size is equal to WORD_SIZE*LINE_SIZE*N_LINES = 32*8*4 = 1024 bytes
+	constant BLK_SIZE	: natural := 8;
+	constant N_BLK	: natural := 16;
+	-- Cache size is equal to WORD_SIZE*LINE_SIZE*N_LINES = 32*8*16 = 4096 bits = 1024 bytes = 1KiB ~= 1 KB
+	
+	constant LOG2_BLK_SIZE	: natural := natural(ceil(log2(real(BLK_SIZE)))); -- 3
+	constant LOG2_N_BLK	: natural := natural(ceil(log2(real(N_BLK)))); -- 4
 	
 	-- Breg typedef
 	TYPE ARRAY_32X32 is array (0 to WORD_SIZE - 1) of std_logic_vector(WORD_SIZE - 1 downto 0);

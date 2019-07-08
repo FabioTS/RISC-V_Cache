@@ -7,22 +7,22 @@ use work.constants.all;
 entity cache_table is
 	port(
 		clk, wren                 : in  std_logic;
-		address                   : in  std_logic_vector(2 downto 0); -- line number
+		address                   : in  std_logic_vector(LOG2_N_BLK - 1 downto 0); -- line number
 		dirty_in, validate, clean : in  std_logic;
-		tag_in                    : in  std_logic_vector(26 downto 0);
+		tag_in                    : in  std_logic_vector(31 - (LOG2_BLK_SIZE + LOG2_N_BLK) downto 0);
 		dirty_out, valid_out      : out std_logic;
-		tag_out                   : out std_logic_vector(26 downto 0)
+		tag_out                   : out std_logic_vector(31 - (LOG2_BLK_SIZE + LOG2_N_BLK) downto 0)
 	);
 end entity cache_table;
 
 architecture RTL of cache_table is
 
 	type bit_array is array (0 to N_BLK - 1) of std_logic;
-	type tag_array is array (0 to N_BLK - 1) of std_logic_vector(26 downto 0);
+	type tag_array is array (0 to N_BLK - 1) of std_logic_vector(31 - (LOG2_BLK_SIZE + LOG2_N_BLK) downto 0);
 
 	signal dirty_table : bit_array := (others => '0');
 	signal valid_table : bit_array := (others => '0');
-	signal tag_table   : tag_array;
+	signal tag_table   : tag_array := (others => (others => '0'));
 
 begin
 	dirty_out <= dirty_table(to_integer(unsigned(address)));

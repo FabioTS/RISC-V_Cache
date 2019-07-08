@@ -33,7 +33,7 @@ architecture RISCV_arch of RISCV is
 	--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 
 	signal instruction_IF_ID, instruction_ID_EX, instruction_EX_MEM, instruction_MEM_WB : std_logic_vector((WSIZE - 1) downto 0);
-	signal ALU_A, ALU_B, ALU_Z, wdata_ID_EX, wdata_EX_MEM                               : std_logic_vector((WSIZE - 1) downto 0);
+	signal ALU_A, ALU_B, ALU_Z, wdata_ID_EX, wdata_EX_MEM                               : std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 	signal WB_data, data_MEM_WB, immediate, rs1                                         : std_logic_vector((WSIZE - 1) downto 0);
 	signal PC_IF_ID                                                                     : std_logic_vector((WSIZE - 1) downto 0);
 
@@ -45,14 +45,21 @@ architecture RISCV_arch of RISCV is
 	signal WB_select_ID_EX, WB_select_EX_MEM, stall                                          : std_logic;
 
 	signal address_ram            : std_logic_vector(15 downto 0);
-	signal data_blk_out           : std_logic_vector(127 downto 0);
+	signal data_blk_out           : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 	signal wren_ram               : std_logic;
-	signal data_blk_in            : std_logic_vector(127 downto 0);
+	signal data_blk_in            : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 	signal read_ram               : std_logic;
 	signal hold_ram               : std_logic;
 	signal ready_ram              : std_logic;
 	signal stall_mem, stall_id    : std_logic;
 	signal stall_if, stall_stages : std_logic := '0';
+	
+	signal read_hit : std_logic;
+	signal read_miss : std_logic;
+	signal write_hit : std_logic;
+	signal write_miss : std_logic;
+	signal write_back : std_logic;
+	signal read_hit_count, read_miss_count, write_hit_count, write_miss_count, write_back_count : natural := 0;
 
 begin
 
@@ -183,11 +190,11 @@ begin
 			WB_select_in      => WB_select_EX_MEM,
 			wren_register_out => wren_register_MEM_WB,
 			stall_mem         => stall_mem,
-			read_hit          => open,
-			read_miss         => open,
-			write_hit         => open,
-			write_miss        => open,
-			write_back        => open,
+			read_hit          => read_hit,
+			read_miss         => read_miss,
+			write_hit         => write_hit,
+			write_miss        => write_miss,
+			write_back        => write_back,
 			address_ram       => address_ram,
 			data_blk_out      => data_blk_out,
 			wren_ram          => wren_ram,
@@ -213,6 +220,7 @@ begin
 
 	control_stall_inst : entity work.control_stall
 		port map(
+			clk          => clk,
 			stall_id     => stall_id,
 			stall_mem    => stall_mem,
 			stall_if     => stall_if,
@@ -234,5 +242,23 @@ begin
 			hold    => hold_ram,
 			ready   => ready_ram
 		);
+		
+		cache_cnt : process(clk) is
+		begin
+			if rising_edge(clk) then
+				if(read_hit = '1') then
+					read_hit_count <= read_hit_count + 1;
+				elsif (read_miss = '1') then 
+					read_miss_count <= read_miss_count + 1;
+				elsif (read_miss = '1') then 
+					write_hit_count <= write_hit_count + 1;
+				elsif (read_miss = '1') then 
+					write_miss_count <= write_miss_count + 1;
+				elsif (read_miss = '1') then 
+					write_back_count <= write_back_count + 1;
+				end if;
+			end if;
+		end process cache_cnt;
+		
 
 end RISCV_arch;

@@ -13,7 +13,7 @@ entity stage_MEM is
 	port(
 		clk                              : in  std_logic;
 		instruction_in                   : in  std_logic_vector((WSIZE - 1) downto 0);
-		instruction_out                  : out std_logic_vector((WSIZE - 1) downto 0);
+		instruction_out                  : out std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 		wdata_in                         : in  std_logic_vector((WSIZE - 1) downto 0);
 		address                          : in  std_logic_vector((WSIZE - 1) downto 0);
 		data_out                         : out std_logic_vector((WSIZE - 1) downto 0);
@@ -25,9 +25,9 @@ entity stage_MEM is
 		write_hit, write_miss            : out std_logic;
 		write_back                       : out std_logic;
 		address_ram                      : out std_logic_vector(15 downto 0);
-		data_blk_out                     : out std_logic_vector(127 downto 0);
+		data_blk_out                     : out std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 		wren_ram                         : out std_logic;
-		data_blk_in                      : in  std_logic_vector(127 downto 0);
+		data_blk_in                      : in  std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 		read_ram                         : out std_logic;
 		hold_ram, ready_ram              : in  std_logic;
 		stall_stages                     : in  std_logic
@@ -45,10 +45,10 @@ architecture stage_MEM_arch of stage_MEM is
 	signal rdata_byte_unsigned : std_logic_vector((WSIZE - 1) downto 0);
 	signal rdata_half_unsigend : std_logic_vector((WSIZE - 1) downto 0);
 
-	signal address_offset : std_logic_vector((WSIZE - 1) downto 0);
+	signal address_offset : std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 
 	alias funct3               : std_logic_vector(2 downto 0) is instruction_in(14 downto 12);
-	signal address_offset_div4 : std_logic_vector(31 downto 0);
+	signal address_offset_div4 : std_logic_vector(31 downto 0) := (others => '0');
 
 	signal not_clk : std_logic;
 

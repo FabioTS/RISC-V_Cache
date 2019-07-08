@@ -2,14 +2,16 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use work.constants.all;
+
 entity ram2 is
 	generic(init_file : string);
 	port(
 		address     : in  std_logic_vector(15 downto 0);
 		clock       : in  std_logic := '1';
-		data        : in  std_logic_vector(127 downto 0);
+		data        : in  std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 		wren        : in  std_logic;
-		q           : out std_logic_vector(127 downto 0);
+		q           : out std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 		read        : in  std_logic;
 		hold, ready : out std_logic
 	);

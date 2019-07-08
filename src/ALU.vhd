@@ -12,13 +12,13 @@ entity ALU is
 		ALU_function : in  FUNCTION_TYPE;
 		shamt        : in  std_logic_vector(4 downto 0);
 		A, B         : in  std_logic_vector((WSIZE - 1) downto 0);
-		Z            : out std_logic_vector((WSIZE - 1) downto 0);
+		Z            : out std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 		zero         : out std_logic
 	);
 end entity ALU;
 
 architecture RTL of ALU is
-	signal Zout : std_logic_vector(WSIZE - 1 downto 0);
+	signal Zout : std_logic_vector(WSIZE - 1 downto 0) := (others => '0');
 begin
 	Z    <= Zout;
 	zero <= '1' when (signed(Zout) = 0) else '0';

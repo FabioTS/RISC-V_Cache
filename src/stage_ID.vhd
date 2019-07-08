@@ -17,7 +17,7 @@ entity stage_ID is
 		wren_memory_out, wren_register_out : out std_logic;
 		WB_select_out                      : out std_logic;
 		stall_id                              : out std_logic;
-		instruction_out                    : out std_logic_vector((WSIZE - 1) downto 0);
+		instruction_out                    : out std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 		wdata_out                          : out std_logic_vector((WSIZE - 1) downto 0);
 		ALU_A_out, ALU_B_out               : out std_logic_vector((WSIZE - 1) downto 0);
 		immediate_out, rs1_out             : out std_logic_vector((WSIZE - 1) downto 0);

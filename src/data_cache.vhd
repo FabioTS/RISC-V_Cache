@@ -17,10 +17,10 @@ entity data_cache is
 		write_hit, write_miss : out std_logic;
 		write_back            : out std_logic;
 		
-		address_ram           : out std_logic_vector(15 downto 0);
-		data_blk_out          : out std_logic_vector(127 downto 0);
+		address_ram           : out std_logic_vector(15 downto 0) := (others => '0');
+		data_blk_out          : out std_logic_vector((WORD_SIZE*BLK_SIZE)-1 downto 0);
 		wren_ram              : out std_logic;
-		data_blk_in           : in  std_logic_vector(127 downto 0);
+		data_blk_in           : in  std_logic_vector((WORD_SIZE*BLK_SIZE)-1 downto 0);
 		read_ram              : out std_logic;
 		hold_ram, ready_ram   : in  std_logic
 	);
@@ -29,10 +29,14 @@ end entity data_cache;
 architecture RTL of data_cache is
 
 	signal wren_blk, wren_cache : std_logic := '0';
-	signal tag_out              : std_logic_vector(26 downto 0);
+	signal tag_out              : std_logic_vector(31 - (LOG2_BLK_SIZE + LOG2_N_BLK) downto 0);
+
+	alias blk        : std_logic_vector (LOG2_N_BLK - 1 downto 0) is address((LOG2_N_BLK + LOG2_BLK_SIZE)-1 downto LOG2_BLK_SIZE);
+	alias blk_offset : std_logic_vector (LOG2_BLK_SIZE - 1 downto 0) is address(LOG2_BLK_SIZE - 1 downto 0);
 
 begin
-	address_ram <= (tag_out(12 downto 0) & address(4 downto 2)) when write_back = '1' else address(17 downto 2);
+	-- If in write back state, the address to write on ram must be the one stored in tag table
+	address_ram <= (tag_out((address_ram'length - LOG2_N_BLK)-1 downto 0) & blk) when write_back = '1' else address((address_ram'length + LOG2_BLK_SIZE)-1 downto LOG2_BLK_SIZE);
 
 --	ram_inst : entity work.ram2
 --		port map(
@@ -50,7 +54,7 @@ begin
 		port map(
 			clk          => clk,
 			wren         => wren_cache,
-			address      => address(4 downto 0),
+			address      => address((LOG2_BLK_SIZE + LOG2_N_BLK)-1 downto 0),
 			byteena      => byteena,
 			data         => data,
 			q            => q,

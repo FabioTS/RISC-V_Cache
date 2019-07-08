@@ -9,7 +9,7 @@ entity cache_control is
 		clk, wren, ready_ram, hold_ram           : in  std_logic;
 		address                        : in  std_logic_vector(31 downto 0);
 		wren_blk, wren_cache, wren_ram : out std_logic := '0';
-		tag_out                        : out std_logic_vector(26 downto 0);
+		tag_out                        : out std_logic_vector(31 - (LOG2_BLK_SIZE + LOG2_N_BLK) downto 0);
 		read_ram, stall_cache          : out std_logic;
 		read_hit, read_miss            : out std_logic;
 		write_hit, write_miss          : out std_logic;
@@ -23,15 +23,15 @@ architecture RTL of cache_control is
 	type state_type is (rh, rm, wh, wm, wb);
 
 	-- Register to hold the current state
-	signal state : state_type := rm;
+	signal state : state_type;
 
 	signal modified, validate : std_logic := '0';
 	signal dirty, valid       : std_logic;
 	signal wren_table, clean  : std_logic := '0';
-	signal tag                : std_logic_vector(26 downto 0);
+	signal tag                : std_logic_vector(31 - (LOG2_BLK_SIZE + LOG2_N_BLK) downto 0) := (others => '0');
 
-	alias line_number : std_logic_vector(2 downto 0) is address(4 downto 2);
-	alias tag_in      : std_logic_vector(26 downto 0) is address(31 downto 5);
+	alias line_number : std_logic_vector(LOG2_N_BLK - 1 downto 0) is address((LOG2_BLK_SIZE + LOG2_N_BLK)-1 downto LOG2_BLK_SIZE);
+	alias tag_in      : std_logic_vector(31 - (LOG2_BLK_SIZE + LOG2_N_BLK) downto 0) is address(31 downto (LOG2_BLK_SIZE + LOG2_N_BLK) );
 
 begin
 	tag_out <= tag;

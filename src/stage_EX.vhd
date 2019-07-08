@@ -10,11 +10,11 @@ entity stage_EX is
 	port(
 		clk                                               : in  std_logic;
 		instruction_in                                    : in  std_logic_vector((WSIZE - 1) downto 0);
-		instruction_out                                   : out std_logic_vector((WSIZE - 1) downto 0);
+		instruction_out                                   : out std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 		wdata_in                                          : in  std_logic_vector((WSIZE - 1) downto 0);
 		wdata_out                                         : out std_logic_vector((WSIZE - 1) downto 0);
 		ALU_A, ALU_B                                      : in  std_logic_vector((WSIZE - 1) downto 0);
-		ALU_Z                                             : out std_logic_vector((WSIZE - 1) downto 0);
+		ALU_Z                                             : out std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 		wren_memory_in, wren_register_in, WB_select_in    : in  std_logic;
 		wren_memory_out, wren_register_out, WB_select_out : out std_logic;
 		stall_stages                                      : in  std_logic
@@ -23,7 +23,7 @@ end entity stage_EX;
 
 architecture stage_EX_arch of stage_EX is
 	--	signal zero         : std_logic;
-	signal Z            : std_logic_vector((WSIZE - 1) downto 0);
+	signal Z            : std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 	signal ALU_function : FUNCTION_TYPE;
 
 begin

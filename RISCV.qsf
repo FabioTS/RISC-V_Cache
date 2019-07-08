@@ -142,7 +142,6 @@ set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -sectio
 set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH RISCV_tb -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_NAME RISCV_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id RISCV_tb
-set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 ns" -section_id RISCV_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME RISCV_tb -section_id RISCV_tb
 set_global_assignment -name PROJECT_IP_REGENERATION_POLICY ALWAYS_REGENERATE_IP
 set_global_assignment -name EDA_SIMULATION_RUN_SCRIPT test/RISCV_run_msim_rtl_vhdl.do -section_id eda_simulation
@@ -161,10 +160,6 @@ set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME data_cache_tb -section_id
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name EDA_TEST_BENCH_FILE testbench/RISCV_tb.vhd -section_id RISCV_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE test/integration/integration_tb.vhd -section_id integration_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE test/unit/immediate_decoder_tb.vhd -section_id immediate_decoder_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE testbench/data_cache_tb.vhd -section_id data_cache_tb
 set_global_assignment -name VHDL_FILE src/control_stall.vhd
 set_global_assignment -name HEX_FILE RAM_DATA.hex
 set_global_assignment -name VHDL_FILE src/stage_WB.vhd
@@ -176,7 +171,6 @@ set_global_assignment -name VHDL_FILE src/RISCV.vhd
 set_global_assignment -name VHDL_FILE src/register_queue.vhd
 set_global_assignment -name VHDL_FILE src/register_file.vhd
 set_global_assignment -name VHDL_FILE src/ram2.vhd
-set_global_assignment -name VHDL_FILE src/ram.vhd
 set_global_assignment -name QIP_FILE src/ram.qip
 set_global_assignment -name SOURCE_FILE src/ram.cmp
 set_global_assignment -name VHDL_FILE src/PC.vhd
@@ -202,4 +196,8 @@ set_global_assignment -name VHDL_FILE src/binary_counter.vhd
 set_global_assignment -name VHDL_FILE src/ALU_control.vhd
 set_global_assignment -name VHDL_FILE src/ALU.vhd
 set_global_assignment -name VHDL_FILE src/adder.vhd
+set_global_assignment -name EDA_TEST_BENCH_FILE testbench/RISCV_tb.vhd -section_id RISCV_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE test/integration/integration_tb.vhd -section_id integration_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE test/unit/immediate_decoder_tb.vhd -section_id immediate_decoder_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE testbench/data_cache_tb.vhd -section_id data_cache_tb
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

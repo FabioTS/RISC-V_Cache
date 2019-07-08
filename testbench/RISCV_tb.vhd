@@ -25,7 +25,7 @@ BEGIN
 	clk <= not clk after clk_period / 2 when clk_unset = '0' else '0';
 	always : PROCESS
 	BEGIN
-		clk_unset <= '1' after 2000 ps;
+		clk_unset <= '1' after 5 ns;
 		wait;
 	END PROCESS always;
 END RISCV_tb_arch;

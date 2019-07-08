@@ -15,14 +15,14 @@ entity stage_IF is
 		immediate, rs1                : in  std_logic_vector((WSIZE - 1) downto 0);
 		next_pc_select                : in  std_logic_vector(1 downto 0);
 		stall                         : in  std_logic;
-		instruction_out, PC_IF_ID_out : out std_logic_vector((WSIZE - 1) downto 0)
+		instruction_out, PC_IF_ID_out : out std_logic_vector((WSIZE - 1) downto 0) := (others => '0')
 	);
 end stage_IF;
 
 architecture stage_IF_arch of stage_IF is
 	signal current_pc, next_pc, pc_plus_4, PC_IF_ID : std_logic_vector((WSIZE - 1) downto 0);
 	signal jalr_result0, jal_result, jalr_result    : std_logic_vector((WSIZE - 1) downto 0);
-	signal current_instruction, branch_result       : std_logic_vector((WSIZE - 1) downto 0);
+	signal current_instruction, branch_result       : std_logic_vector((WSIZE - 1) downto 0) := (others => '0');
 	signal clk_memory, pc_stall                     : std_logic;
 
 begin
@@ -95,8 +95,10 @@ begin
 	process(clk) is
 	begin
 		if rising_edge(clk) then
-			if next_pc_select = PC_SELECT_PLUS4 or stall = '1' then
+			if next_pc_select = PC_SELECT_PLUS4 and stall /= '1' then
 				instruction_out <= current_instruction;
+			elsif stall = '1' then
+				instruction_out <= instruction_out;
 			else
 				instruction_out <= BUBBLE;
 			end if;
