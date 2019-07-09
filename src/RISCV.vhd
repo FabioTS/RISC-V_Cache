@@ -13,8 +13,8 @@ entity RISCV is
 
 	port(
 		clk             : in  std_logic;
-		instruction     : out std_logic_vector(WSIZE - 1 downto 0);
-		registers_array : out ARRAY_32X32
+		instruction     : out std_logic_vector(WSIZE - 1 downto 0)
+--		registers_array : out ARRAY_32X32
 		--*--*--*--*--*--*--*--*--*--*--*--*--*--*--* Signals necessary to FPGA, comment when simulating in modelsim and uncomment above --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 		--		clk50, clk_key                                 : in  std_logic;
 		--		MUX_FPGA_select                                : in  std_logic_vector(1 downto 0);
@@ -44,7 +44,7 @@ architecture RISCV_arch of RISCV is
 	signal wren_memory_ID_EX, wren_memory_EX_MEM                                             : std_logic;
 	signal WB_select_ID_EX, WB_select_EX_MEM, stall                                          : std_logic;
 
-	signal address_ram            : std_logic_vector(15 downto 0);
+	signal address_ram            : std_logic_vector(RAM_ADDRESS_SIZE-1 downto 0);
 	signal data_blk_out           : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 	signal wren_ram               : std_logic;
 	signal data_blk_in            : std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
@@ -147,7 +147,7 @@ begin
 			rs1_out           => rs1,
 			PC_IF_ID          => PC_IF_ID,
 			next_pc_select    => next_pc_select,
-			registers_array   => registers_array
+			registers_array   => open --registers_array
 		);
 
 	stage_EX_inst : entity work.stage_EX

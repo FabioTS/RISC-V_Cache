@@ -24,7 +24,7 @@ entity stage_MEM is
 		read_hit, read_miss              : out std_logic;
 		write_hit, write_miss            : out std_logic;
 		write_back                       : out std_logic;
-		address_ram                      : out std_logic_vector(15 downto 0);
+		address_ram                      : out std_logic_vector(RAM_ADDRESS_SIZE-1 downto 0);
 		data_blk_out                     : out std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 		wren_ram                         : out std_logic;
 		data_blk_in                      : in  std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);

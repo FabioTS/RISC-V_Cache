@@ -8,7 +8,8 @@ package constants is
 	constant DEFAULT_INSTRUCTIONS_INIT_FILE : string  := "MEM_INSTR.mif";
 	constant DEFAULT_DATA_INIT_FILE         : string  := "MEM_DADOS.mif";
 	constant DATA_MEMORY_ADDRESS_OFFSET     : integer := - 16#00002000#; -- This value will be subtract from all memory addresses
-
+	constant RAM_ADDRESS_SIZE               : natural := 13;
+	
 	-- Cache param
 	constant BLK_SIZE	: natural := 8;
 	constant N_BLK	: natural := 16;

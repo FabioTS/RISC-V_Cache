@@ -7,7 +7,7 @@ use work.constants.all;
 entity ram2 is
 	generic(init_file : string);
 	port(
-		address     : in  std_logic_vector(15 downto 0);
+		address     : in  std_logic_vector(RAM_ADDRESS_SIZE-1 downto 0);
 		clock       : in  std_logic := '1';
 		data        : in  std_logic_vector((WORD_SIZE * BLK_SIZE) - 1 downto 0);
 		wren        : in  std_logic;
